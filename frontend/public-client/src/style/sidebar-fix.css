@@ -1,0 +1,11 @@
+/* Additional styles to fix sidebar horizontal scrolling */
+[data-sidebar] {
+  overflow-x: hidden !important;
+}
+
+[data-sidebar="content"],
+[data-sidebar="menu"],
+[data-sidebar="group"],
+[data-sidebar="menu-item"] {
+  overflow-x: hidden !important;
+}

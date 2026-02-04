@@ -1,0 +1,37 @@
+stages:
+  - install
+  - test
+  - build
+
+variables:
+  NODE_ENV: test
+
+cache:
+  paths:
+    - backend/node_modules/
+
+install_dependencies:
+  stage: install
+  script:
+    - cd backend
+    - npm install
+
+test_backend:
+  stage: test
+  script:
+    - cd backend
+    - npm run lint
+    # - npm test # Uncomment if you have tests
+
+build_backend:
+  stage: build
+  script:
+    - cd backend
+    - npm run build # Add this script if you have a build step
+
+# deploy_backend:
+#   stage: deploy
+#   script:
+#     - echo "Deploy"
+#   only:
+#     - main

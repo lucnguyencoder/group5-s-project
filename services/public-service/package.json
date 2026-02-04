@@ -1,0 +1,28 @@
+{
+  "name": "public-service",
+  "version": "1.0.0",
+  "description": "Public API microservice for SWP391 project",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "TZ=Asia/Ho_Chi_Minh node src/server.js",
+    "dev": "nodemon src/server.js",
+    "lint": "eslint src/**/*.js --fix"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^2.2.0",
+    "consola": "^3.4.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.15.0",
+    "nodemailer": "^6.9.16",
+    "nodemon": "^3.1.10",
+    "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "eslint": "^9.25.0"
+  }
+}

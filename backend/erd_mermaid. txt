@@ -1,0 +1,371 @@
+---
+config:
+  theme: redux-dark-color
+---
+erDiagram
+    User {
+        int id PK
+        string email UK
+        string password_hash
+        string profile_picture
+        datetime created_at
+        datetime updated_at
+    }
+    UserGroup {
+        int id PK
+        string name UK "system_admin, support_agent, manager, sale_agent, courier, customer"
+        string type "system, store, customer"
+        string description
+        boolean is_default
+        datetime created_at
+        datetime updated_at
+    }
+    Permission {
+        int id PK
+        string url UK "API endpoint URL"
+        string http_method "GET, POST, PUT, DELETE, PATCH"
+        string description
+        datetime created_at
+        datetime updated_at
+    }
+    UserGroupPermission {
+        int id PK
+        int group_id FK
+        int permission_id FK
+        datetime created_at
+    }
+    UserGroupMembership {
+        int user_id PK, FK
+        int group_id PK, FK
+        datetime assigned_at
+        datetime created_at
+    }
+    UserFollowStore {
+        int user_id PK, FK
+        int store_id PK, FK
+        datetime followed_at
+    }
+    UserSavedProduct {
+        int user_id PK, FK
+        int food_id PK, FK
+        datetime saved_at
+    }
+    CustomerProfile {
+        int user_id PK, FK
+        date date_of_birth
+        enum gender "male, female, other"
+        string full_name
+        boolean is_verified
+        datetime created_at
+        datetime updated_at
+    }
+    PasswordRecovery {
+        int id PK
+        int user_id FK
+        string recovery_code
+        datetime expires_at
+        boolean is_used
+        datetime created_at
+        datetime used_at
+    }
+    StoreProfile {
+        int user_id PK, FK
+        int store_id FK
+        enum role "manager, sale_agent, courier"
+        string username
+        string email
+        string vehicle_plate "nullable, for courier"
+        string vehicle_type "nullable, for courier"
+        boolean is_available "for courier availability"
+        boolean is_courier_active "for courier only"
+        string full_name "can be different from user.full_name"
+        string phone "can be different from user.phone"
+        datetime created_at
+        datetime updated_at
+    }
+    SystemProfile {
+        int user_id PK, FK
+        enum role "system_admin, support_agent"
+        string full_name "can be different from user.full_name"
+        string phone_number
+        datetime created_at
+        datetime updated_at
+    }
+    StoreSettings {
+        int store_id PK, FK
+        boolean can_edit_profile "can staff edit their store profile"
+        json other_settings "flexible settings storage"
+        datetime created_at
+        datetime updated_at
+    }
+    DeliveryAddress {
+        int address_id PK
+        int user_id FK
+        string address_line1
+        decimal latitude
+        decimal longitude
+        boolean is_default
+        string recipient_name
+        string recipient_phone
+        datetime created_at
+        datetime updated_at
+    }
+    Store {
+        int store_id PK
+        string store_name
+        string description
+        string phone
+        string email
+        string address
+        decimal latitude
+        decimal longitude
+        string avatar_url
+        string cover_image_url
+        time opening_time
+        time closing_time
+        enum status "active, inactive, banned"
+        decimal rating
+        int total_reviews
+        datetime created_at
+        datetime updated_at
+    }
+    DeliveryFeeRule {
+        int rule_id PK
+        int store_id FK
+        decimal distance_from_km
+        decimal distance_to_km "nullable for unlimited"
+        decimal base_fee
+        decimal per_km_fee "nullable if flat rate"
+        boolean is_supported "false for not supported ranges"
+        int sort_order
+        datetime created_at
+        datetime updated_at
+    }
+    Category {
+        int category_id PK
+        int store_id FK
+        string category_name
+        string description
+        int sort_order
+        boolean is_active
+        datetime created_at
+        datetime updated_at
+    }
+    Food {
+        int food_id PK
+        int store_id FK
+        int category_id FK
+        string food_name
+        string description
+        decimal base_price
+        boolean is_on_sale
+        decimal sale_price "nullable"
+        string image_url
+        boolean is_available
+        int preparation_time "minutes"
+        int max_allowed_quantity
+        datetime created_at
+        datetime updated_at
+    }
+
+    FoodMetrics {
+        int item_id PK
+        int food_id FK
+        int number_of_ratings
+        int number_of_orders
+        int number_of_people_ordered
+        int number_of_favorites
+        decimal average_rating
+    }
+
+    CustomizationGroup {
+        int group_id PK
+        int food_id FK
+        string group_name
+        string description
+        boolean is_required
+        int min_selections
+        int max_selections "null means unlimited"
+        int sort_order
+        datetime created_at
+    }
+    CustomizationOption {
+        int option_id PK
+        int group_id FK
+        string option_name
+        string description
+        decimal additional_price
+        boolean is_default
+        int sort_order
+        datetime created_at
+    }
+    Discount {
+        int discount_id PK
+        int store_id FK
+        string discount_name
+        string description
+        enum discount_type "percentage, fixed_amount"
+        enum discount_sale_type "items", "delivery"
+        decimal discount_value
+        decimal max_discount_amount "nullable"
+        datetime valid_from "nullable"
+        datetime valid_to "nullable"
+        int usage_limit "nullable"
+        boolean is_price_condition "default false"
+        int min_price_condition "nullable"
+        boolean is_active
+        datetime created_at
+        datetime updated_at
+    }
+    
+
+    Order {
+        int order_id PK
+        string order_code UK 
+        int customer_id FK
+        int store_id FK
+        enum order_type "pickup, delivery"
+        enum payment_option "cash, qr"
+        decimal base_price_subtotal
+        decimal sale_price_subtotal
+        decimal promote_discount_price
+        decimal delivery_fee
+        decimal final_price
+        boolean is_completed
+        string snapshot_delivery_address_line
+        string snapshot_recipient_name
+        string snapshot_recipient_phone
+        string snapshot_recipient_latitude
+        string snapshot_recipient_longitude
+        string customer_special_instruction
+        boolean is_paid
+        datetime payment_completed_at
+        int assigned_courier_id FK "nullable"
+        string snapshot_assigned_courier_name 
+        string snapshot_assigned_courier_phone
+        datetime created_at
+        datetime updated_at
+    }
+    OrderEvent {
+        int event_id PK
+        int order_id FK
+        enum event_type "new, courier_assigned, preparing, delivering, ready_to_pickup, completed, cancelled, payment_completed, courier_unassigned"
+        int triggered_by_user_id FK "nullable"
+        string snapshot_triggered_by_name 
+        string event_reason "cancellation reason, failure reason, etc"
+        string event_notes "additional details"
+        json event_metadata "flexible data for different event types"
+        datetime event_timestamp
+    }
+    OrderItem {
+        int item_id PK
+        int order_id FK
+        int food_id FK
+        int quantity
+        decimal base_price
+        decimal sale_price
+        string customization
+        string snapshot_food_image
+        string snapshot_food_name
+        datetime created_at
+    }
+    UserDiscountUsage {
+        int usage_id PK
+        int user_id FK
+        int discount_id FK
+        int order_id FK
+        string snapshot_discount_code
+        string snapshot_discount_name
+        string snapshot_discount_type
+        string snapshot_discount_sale_type
+        string snapshot_discount_value
+        string snapshot_discount_amount
+        decimal real_discount_amount
+        datetime used_at
+    }
+
+    DeliveryEvidence {
+        int evidence_id PK
+        int order_id FK
+        string evidence_type "pickup_photo, delivery_photo, signature"
+        string evidence_url
+        string evidence_notes
+        int uploaded_by_user_id FK
+        string uploaded_by_user_name "snapshot"
+        datetime uploaded_at
+    }
+    Review {
+        int food_id PK
+        int customer_id FK
+        int rating
+        string comment
+        datetime created_at
+        datetime updated_at
+    }
+    Ticket {
+        int ticket_id PK
+        string ticket_code UK
+        int requester_id FK
+        int assigned_to FK "nullable"
+        string subject
+        string description
+        enum status "open, in_progress, resolved, closed"
+        datetime created_at
+        datetime updated_at
+        datetime resolved_at
+    }
+    TicketMessage {
+        int message_id PK
+        int ticket_id FK
+        int sender_id FK
+        string message_content
+        datetime created_at
+    }
+    
+    %% Relationships
+    User ||--o{ UserGroupMembership : "assigned to groups"
+    UserGroup ||--o{ UserGroupMembership : "contains users"
+    UserGroup ||--o{ UserGroupPermission : "has permissions"
+    Permission ||--o{ UserGroupPermission : "granted to groups"
+    User ||--o| CustomerProfile : "customer details"
+    User ||--o{ PasswordRecovery : "has recovery codes"
+    User ||--o{ UserFollowStore : "follows stores"
+    Store ||--o{ UserFollowStore : "followed by users"
+    User ||--o{ UserSavedProduct : "saves products"
+    Food ||--o{ UserSavedProduct : "saved by users"
+    User ||--o{ StoreProfile : "staff roles"
+    User ||--o| SystemProfile : "system roles"
+    User ||--o{ DeliveryAddress : "delivery addresses"
+    Store ||--o{ StoreProfile : "has staff"
+    Store ||--o| StoreSettings : "has settings"
+    Store ||--o{ Category : "has categories"
+    Store ||--o{ Food : "has menu items"
+    Store ||--o{ Discount : "offers discounts"
+    Store ||--o{ Order : "receives orders"
+    Store ||--o{ Review : "receives reviews"
+    Store ||--o{ DeliveryFeeRule : "has delivery rules"
+    Category ||--o{ Food : "contains foods"
+    Food ||--o{ FoodProperty : "has properties"
+    Food ||--o{ CustomizationGroup : "has customization groups"
+    CustomizationGroup ||--o{ CustomizationOption : "has options"
+    Discount ||--o{ DiscountCondition : "has conditions"
+    Discount ||--o{ OrderDiscount : "applied to orders"
+    Discount ||--o{ UserDiscountUsage : "tracked usage"
+    User ||--o{ Order : "places orders"
+    User ||--o{ UserDiscountUsage : "uses discounts"
+    Order ||--o{ OrderEvent : "event history"
+    Order ||--o{ OrderItem : "contains items"
+    Order ||--o{ OrderDiscount : "has discounts"
+    Order ||--o{ DeliveryEvidence : "has delivery evidence"
+    Order ||--o| Review : "can be reviewed"
+    Order ||--o{ UserDiscountUsage : "discount usage"
+    OrderItem ||--o{ OrderItemCustomization : "has customizations"
+    CustomizationOption ||--o{ OrderItemCustomization : "selected in orders"
+    DeliveryAddress ||--o{ Order : "address reference only"
+    User ||--o{ DeliveryEvidence : "uploads evidence"
+    User ||--o{ OrderEvent : "triggers events"
+    User ||--o{ Ticket : "creates tickets"
+    User ||--o{ Ticket : "assigned tickets"
+    Ticket ||--o{ TicketMessage : "has messages"
+    User ||--o{ TicketMessage : "sends messages"
+    User ||--o{ Review : "writes reviews"

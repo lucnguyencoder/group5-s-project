@@ -1,0 +1,34 @@
+{
+  "name": "admin-service",
+  "version": "1.0.0",
+  "description": "Admin microservice for SWP391 project",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "TZ=Asia/Ho_Chi_Minh node src/server.js",
+    "dev": "nodemon src/server.js",
+    "lint": "eslint src/**/*.js --fix"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.8",
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
+    "consola": "^3.4.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "geolib": "^3.3.4",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.14.1",
+    "nodemailer": "^7.0.3",
+    "nodemon": "^3.1.10",
+    "sequelize": "^6.37.7",
+    "socket.io": "^4.8.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "eslint": "^9.25.0"
+  }
+}

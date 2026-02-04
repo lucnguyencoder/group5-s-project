@@ -1,0 +1,87 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - CHOKIDAR_USEPOLLING=true
+      - SUPABASE_URL=https://czyabfylwtbrkltvlohu.supabase.co
+      - SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6eWFiZnlsd3RicmtsdHZsb2h1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMTU2NjMsImV4cCI6MjA4NTY5MTY2M30.HCDICCu9QwNKT74Kz2zgiFHowUJy_I77fLHtrSNHfr4
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  public-client:
+    build:
+      context: ./frontend/public-client
+    volumes:
+      - ./frontend/public-client:/app
+      - /app/node_modules
+    ports:
+      - "3001:5173"
+    networks:
+      - app-network
+
+  admin-client:
+    build:
+      context: ./frontend/admin-client
+    volumes:
+      - ./frontend/admin-client:/app
+      - /app/node_modules
+    ports:
+      - "3002:5173"
+    networks:
+      - app-network
+
+
+  store-client:
+    build:
+      context: ./frontend/store-client
+    volumes:
+      - ./frontend/store-client:/app
+      - /app/node_modules
+    ports:
+      - "3004:5173"
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    volumes:
+      - db_data_new:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: swp391_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3307:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data_new: 

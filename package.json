@@ -1,0 +1,11 @@
+{
+  "name": "swp391-project",
+  "scripts": {
+    "dev": "docker-compose up",
+    "rebuild": "docker-compose down && docker compose up -d --pull always --build",
+    "rebuild-linux": "docker compose down && docker compose up -d --pull always --build"
+  },
+  "dependencies": {
+    "nodemailer": "^7.0.3"
+  }
+}

@@ -1,0 +1,7 @@
+﻿node_modules/
+.env
+dist/
+build/
+.vscode/
+backend/test_data/
+mysql-config/my.cnf
