@@ -12,6 +12,13 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 5173,
+    allowedHosts: [
+      "public-client",
+      "public-gateway",
+      "localhost",
+      "127.0.0.1",
+      "host.docker.internal",
+    ],
     watch: {
       usePolling: true,
       interval: 1000,
